@@ -1,6 +1,12 @@
-package Test::MyCmd;
-use Moose;
+package Test::MyCmd2;
 
-extends 'MooseX::App::Cmd';
+use strict;
+use warnings;
+
+use base qw(App::Cmd);
+
+sub global_opt_spec {
+  [ 'verbose+' => "Verbosity" ],
+}
 
 1;
