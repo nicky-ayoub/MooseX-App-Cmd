@@ -1,5 +1,7 @@
 package Test::MyCmd2::Command::foo;
-use base qw/App::Cmd::Subdispatch/;
+use Moose;
+
+extends qw/MooseX::App::Cmd::Subdispatch/;
 
 use constant plugin_search_path => __PACKAGE__;
 
