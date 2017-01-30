@@ -17,8 +17,11 @@ diag (Dumper($app));
 
 my ( $cmd, $opt, @args ) = $app->prepare_command(qw/--verbose foo --moose bar --foo/);
 
-is_deeply( $app->global_options, { verbose => 1 }, "global opts" );
+ok( $app->can('verbose'), "has verbosity" );
 
+if ( $app->can('verbose') ) {
+    is( $app->verbose, 1, "verbose is set" );
+}
 isa_ok( $cmd, "MooseX::App::Cmd::Command" );
 
 is( ($cmd->command_names)[0], "bar", "dispatched to a nested command" );

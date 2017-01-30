@@ -1,9 +1,9 @@
 package Test::MyCmd2::Command::foo::bar;
 use Moose;
-extends qw/MooseX::App::Cmd::Command/;
+extends qw/Test::MyCmd2::Command::foo/;
 
 use constant opt_spec => (
-  [ foo => "lefoo" ],
+  [ foo => "lefoobar" ],
 );
 
 1;
