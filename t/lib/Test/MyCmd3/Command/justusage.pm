@@ -1,11 +1,11 @@
-package Test::MyCmd::Command::justusage;
+package Test::MyCmd3::Command::justusage;
 use Moose;
 
 extends 'MooseX::App::Cmd::Command';
 
 =head1 NAME
 
-Test::MyCmd::Command::justusage - it just dies its own usage, no matter what
+Test::MyCmd3::Command::justusage - it just dies its own usage, no matter what
 
 =cut
 

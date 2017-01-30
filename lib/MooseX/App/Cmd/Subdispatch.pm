@@ -1,6 +1,6 @@
 package MooseX::App::Cmd::Subdispatch;
 
-our $VERSION = '0.33';
+our $VERSION = '0.34';
 
 use Moose;
 use Getopt::Long::Descriptive ();
@@ -9,4 +9,3 @@ extends 'Moose::Object', 'App::Cmd::Subdispatch';
 with 'MooseX::Getopt';
 
 1;
-

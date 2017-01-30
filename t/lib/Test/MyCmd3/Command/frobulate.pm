@@ -1,4 +1,4 @@
-package Test::MyCmd::Command::frobulate;
+package Test::MyCmd3::Command::frobulate;
 use Moose;
 
 extends 'MooseX::App::Cmd::Command';

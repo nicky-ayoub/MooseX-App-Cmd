@@ -1,11 +1,11 @@
-package Test::MyCmd::Command::bark::yap;
+package Test::MyCmd3::Command::bark;
 use Moose;
 
-extends 'MooseX::App::Cmd::Command';
+extends 'MooseX::App::Cmd::Subdispatch';
 
 =head1 NAME
 
-Test::MyCmd::Command::bark - required field is used
+Test::MyCmd3::Command::bark - required field is used
 
 =cut
 
@@ -19,7 +19,7 @@ has wow => (
 sub execute {
     my ( $self, $opt, $arg ) = @_;
 
-    die "my dog name barks with a yap " . $self->wow . "\n";
+    die "my dog name barks " . $self->wow . "\n";
 }
 
 1;

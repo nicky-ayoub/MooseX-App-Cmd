@@ -1,11 +1,11 @@
-package Test::MyCmd::Command::stock;
+package Test::MyCmd3::Command::stock;
 use Moose;
 
 extends 'MooseX::App::Cmd::Command';
 
 =head1 NAME
 
-Test::MyCmd::Command::stock - nothing here is overridden
+Test::MyCmd3::Command::stock - nothing here is overridden
 
 =cut
 
