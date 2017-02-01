@@ -1,8 +1,9 @@
 package Test::MyCmd2;
-
 use Moose;
 extends 'MooseX::App::Cmd';
-with 'MooseX::Getopt';
 
+sub global_opt_spec {
+  [ 'verbose+' => "Verbosity" ],
+}
 
 1;
