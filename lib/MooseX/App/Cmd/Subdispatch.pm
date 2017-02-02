@@ -8,89 +8,66 @@ use namespace::autoclean;
 extends 'Moose::Object', 'App::Cmd::Subdispatch';
 with 'MooseX::Getopt';
 
-#has usage => (
-#    is        => 'ro',
-#    required  => 1,
-#    metaclass => 'NoGetopt',
-#    isa       => 'Object',
-#);
+has usage => (
+    is        => 'ro',
+    required  => 1,
+    metaclass => 'NoGetopt',
+    isa       => 'Object',
+);
 
 has app => (
     is        => 'ro',
     required  => 1,
     metaclass => 'NoGetopt',
     isa       => 'MooseX::App::Cmd',
-    builder   => '_build_app',
 );
+override _process_args => sub {
+    my ($class, $args) = @_;
+    local @ARGV = @{$args};
 
-sub _build_app { $_[0]{app} };
+    my $config_from_file;
+    if ($class->meta->does_role('MooseX::ConfigFromFile')) {
+        local @ARGV = @ARGV;
 
-=method prepare
+        my $configfile;
+        my $opt_parser;
+        {
+            ## no critic (Modules::RequireExplicitInclusion)
+            $opt_parser
+                = Getopt::Long::Parser->new( config => ['pass_through'] );
+        }
+        $opt_parser->getoptions( 'configfile=s' => \$configfile );
+        if (not defined $configfile
+            and $class->can('_get_default_configfile'))
+        {
+            $configfile = $class->_get_default_configfile();
+        }
 
-  my $subcmd = $subdispatch->prepare($app, @args);
-
-An overridden version of L<App::Cmd::Command/prepare> that performs a new
-dispatch cycle.
-
-=cut
-
-override 'prepare' => sub  {
-	my ($class, $app, @args) = @_;
-
-	my $self = $class->new({ app => $app });
-
-	my ($subcommand, $opt, @sub_args) = $self->get_command(@args);
-
-  $self->set_global_options($opt);
-
-	if (defined $subcommand) {
-    return $self->_prepare_command($subcommand, $opt, @sub_args);
-  } else {
-    if (@args) {
-      return $self->_bad_command(undef, $opt, @sub_args);
-    } else {
-      return $self->_prepare_default_command($opt, @sub_args);
+        if (defined $configfile) {
+            $config_from_file = $class->get_config_from_file($configfile);
+        }
     }
-  }
+
+    my %processed = $class->_parse_argv(
+        params => { argv => \@ARGV },
+        options => [ $class->_attrs_to_options($config_from_file) ],
+    );
+
+    return (
+        $processed{params},
+        $processed{argv},
+        usage => $processed{usage},
+
+        # params from CLI are also fields in MooseX::Getopt
+        $config_from_file
+            ? (%$config_from_file, %{ $processed{params} })
+            : %{ $processed{params} },
+    );
 };
-
-override '_plugin_prepare' => sub {
-  my ($self, $plugin, @args) = @_;
-  return $plugin->prepare($self->choose_parent_app($self->app, $plugin), @args);
-};
-
-
-
-=method choose_parent_app
-
-  $subcmd->prepare(
-    $subdispatch->choose_parent_app($app, $opt, $plugin),
-    @$args
-  );
-
-A method that chooses whether the parent app or the subdispatch is going to be
-C<< $cmd->app >>.
-
-=cut
-
-sub choose_parent_app {
-	my ( $self, $app, $plugin ) = @_;
-
-	if (
-    $plugin->isa("App::Cmd::Command::commands")
-    or $plugin->isa("App::Cmd::Command::help")
-    or scalar keys %{ $self->global_options }
-  ) {
-		return $self;
-	} else {
-		return $app;
-	}
-}
 
 sub _usage_format {    ## no critic (ProhibitUnusedPrivateSubroutines)
     return shift->usage_desc;
 }
-
 ## no critic (Modules::RequireExplicitInclusion)
 __PACKAGE__->meta->make_immutable();
 1;

@@ -1,10 +1,11 @@
 package Test::MyCmd2;
-
 use Moose;
 extends 'MooseX::App::Cmd';
 
-sub global_opt_spec {
-  [ 'verbose+' => "Verbosity" ],
-}
-
+has verbose => (
+    isa           => 'Str',
+    is            => 'ro',
+    required      => 0,
+    documentation => 'rnon equired option field',
+);
 1;

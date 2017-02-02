@@ -6,29 +6,22 @@ use warnings;
 use Test::More 'no_plan';
 
 use Test::Fatal;
-use Data::Dumper;
+
 use lib 't/lib';
 
-BEGIN { use_ok('Test::MyCmd2') };
+BEGIN { use_ok('Test::MyCmd3') };
 
-my $app = Test::MyCmd2->new({});
+my $app = Test::MyCmd3->new({});
 
-diag (Dumper($app));
+my ( $cmd, $opt, @args ) = $app->prepare_command(qw/--verbose bark growl /);
 
-my ( $cmd, $opt, @args ) = $app->prepare_command(qw/--verbose foo --moose bar --foo/);
-
-diag (Dumper($cmd));
-diag (Dumper($opt));
-diag (Dumper(\@args));
-
-diag (Dumper($app->global_options));
 is_deeply( $app->global_options, { verbose => 1 }, "global opts" );
 
 isa_ok( $cmd, "App::Cmd::Command" );
 
-is( ($cmd->command_names)[0], "bar", "dispatched to a nested command" );
+is( ($cmd->command_names)[0], "growl", "dispatched to a nested command" );
 
-isa_ok( $cmd->app, "MooseX::App::Cmd::Subdispatch" );
+isa_ok( $cmd->app, "App::Cmd::Subdispatch" );
 
 is_deeply( $cmd->app->global_options, { moose => 1 }, "subdispatcher global options" );
 
