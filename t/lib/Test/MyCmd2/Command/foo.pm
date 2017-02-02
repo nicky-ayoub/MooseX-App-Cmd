@@ -1,12 +1,17 @@
 package Test::MyCmd2::Command::foo;
 use Moose;
 
-extends qw/MooseX::App::Cmd::Subdispatch/;
+extends qw/Test::MyCmd2::Command /;
 
 use constant plugin_search_path => __PACKAGE__;
 
-use constant global_opt_spec => (
-  [ 'moose' => "lefoo" ],
+has moose => (
+    traits        => [qw(Getopt)],
+    isa           => 'Bool',
+    is            => 'rw',
+    documentation => 'bar arg moose',
+    default       => sub {1},
 );
+
 
 1;
